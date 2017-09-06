@@ -2,6 +2,7 @@
 using Novel.Bll.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,14 @@ namespace Novel.Bll
         }
         public NovelEntity GetNovel(int id)
         {
+            Model1 db = new Model1();
+            db.MyEntities.Add(new MyEntity()
+            {
+                Id = 0,
+                Name = "Entity Name"
+            });
+            db.SaveChanges();
+
             return novels.Where(s => s.ID == id).FirstOrDefault();
         }
 

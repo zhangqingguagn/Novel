@@ -27,6 +27,19 @@ namespace Novel.Bll
                 Title = s.InnerText
             }).ToList();
         }
+
+        public string GetChaptersText(int chapterId)
+        {
+            var novel = new NovelManager().GetNovel(chapterId);
+
+            if (File.Exists(novel.ChaptersPath)==false)
+            {
+                DownloadChapters(novel.ID);
+            }
+
+            return new FileHelper(novel.ChaptersPath).ReadAllText();
+        }
+
         /// <summary>
         /// 从小说服务器获取小说章节列表
         /// </summary>
@@ -47,6 +60,7 @@ namespace Novel.Bll
             if (href.Trim().StartsWith("http") == false)
             {
                 host = url.Scheme + "://" + url.Authority;
+
 
                 foreach (var item in chapterNodes)
                 {

@@ -12,5 +12,8 @@ namespace Novel.Bll.Entities
         public string Title { get; set; }
         public string SourceUrl { get; set; }
         public string Body { get; set; }
+        // 上一章
+        // 下一章
+        // 
     }
 }

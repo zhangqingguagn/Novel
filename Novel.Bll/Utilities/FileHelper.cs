@@ -36,5 +36,10 @@ namespace Novel.Bll.Utilities
             }
             File.WriteAllLines(FilePath, contents);
         }
+
+        public string ReadAllText()
+        {
+            return File.ReadAllText(FilePath);
+        }
     }
 }
