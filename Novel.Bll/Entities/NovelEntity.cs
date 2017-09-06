@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Novel.Bll.Utilities;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +29,28 @@ namespace Novel.Bll.Entities
         /// 章节目录网址
         /// </summary>
         public string ChapterDirectoryUrl { get; set; }
+
+        /// <summary>
+        /// 小说保存文件夹路径
+        /// </summary>
+        public string NovelDirectory
+        {
+            get
+            {
+                return Path.Combine(FileHelper.NovelBaseDirectory, Title);
+            }
+        }
+
+        /// <summary>
+        /// 小说章节保存文件路径
+        /// </summary>
+        public string ChaptersPath
+        {
+            get
+            {
+                return Path.Combine(FileHelper.NovelBaseDirectory, Title,"Chapter.txt");
+            }
+        }
 
     }
 }

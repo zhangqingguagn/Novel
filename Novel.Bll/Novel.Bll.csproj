@@ -50,6 +50,7 @@
     <Compile Include="Entities\NovelSource.cs" />
     <Compile Include="NovelManager.cs" />
     <Compile Include="NovelSourceManager.cs" />
+    <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="Utilities\HtmlHelper.cs" />
     <Compile Include="Utilities\HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

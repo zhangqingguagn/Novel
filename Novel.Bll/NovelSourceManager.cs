@@ -28,7 +28,7 @@ namespace Novel.Bll
         }
         public NovelSource GetSource(int id)
         {
-            return novelSources[id];
+            return novelSources.Where(s=>s.ID == id).FirstOrDefault();
         }
     }
 }

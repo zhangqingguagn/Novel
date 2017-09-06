@@ -26,6 +26,12 @@ namespace Novel.Bll
                 };
             }
         }
+
+        public object GetNovels()
+        {
+            return novels;
+        }
+
         public NovelManager()
         {
         }
