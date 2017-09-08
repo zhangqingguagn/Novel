@@ -1,54 +1,78 @@
 ﻿@model Novel.Bll.DB.tChapter
 
 @{
-    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_CleanLayout.cshtml";
+    ViewBag.Title = "@Model.Title";
 }
-
-<h2>@Model.Title</h2>
-
-<div class="chapter">
-        <h2>@Model.Title</h2>
-        @Html.Raw(Model.Body)
-</div>
-<p>
-    @Html.ActionLink("Prev", "Details", "Chapter", new { chapterId = Model.PrevChapterID }, null) |
-    @Html.ActionLink("Chapters", "Index") |
-    @Html.ActionLink("Next","Details", "Chapter", new { chapterId = Model.NextChapterID },null) |
-</p>
-<template id="chapterBody">
+<div class="chapters">
     <div class="chapter">
         <h2>@Model.Title</h2>
         @Html.Raw(Model.Body)
     </div>
-</template>
-
+</div>
 @section scripts{
     <script type="text/javascript">
         $(function () {
+            var nextChapterId = @(Model.NextChapterID??0);
             var temp = $("#chapterBody").html();
 
-            $('.chapter').on('scrollSpy:enter', function () {
-                $(".chapter").after(temp);
-                addScrollSpyListener();
-            });
+            //$('.chapter').on('scrollSpy:enter', function () {
+            //    getNext(function(chapter){
+            //        appendChapterHtml(chapter);
+
+            //        addScrollSpyListener();
+            //    }, null)
+
+            //});
             function addScrollSpyListener() {
-                $('.chapter').on('scrollSpy:exit', function () {
-                    if ($('.chapter').size() > 1) {
-                        $(this).remove();
+                $('.chapter').on('scrollSpy:enter', function () {
+                    var $this = $(this);
+                    if($(".chapter").size()-1==$(".chapter").index($this)){
+                        getNext(function(chapter){
+                            // 取消当前监听
+                            $(".chapter").off("scrollSpy:exit");
+
+                            appendChapterHtml(chapter);
+
+                            addScrollSpyListener();
+
+                            console.log($(".chapter").size())
+                            $('.chapter').scrollSpy();
+                        })
                     }
-                    // 取消当前监听
-                    $(".chapter").off("scrollSpy:exit");
-
-                    $(".chapter").last().after(temp);
-
-                    addScrollSpyListener();
-
-                    console.log($(".chapter").size())
-                    $('.chapter').scrollSpy();
                 });
             }
-
+            addScrollSpyListener();
             $('.chapter:last').scrollSpy();
+            function getNext(success,error)
+            {
+                success = success || function () { };
+                error = error || function () { };
+                var data =
+                $.ajax({
+                    url: "@Url.Action("GetChapter", "Chapter")",
+                    type: "get",
+                    dataType: "json",
+                    data: { chapterId: nextChapterId },
+                    async: true,
+                    success: function (resp) {
+                        if (resp.success) {
+                            nextChapterId = resp.data.NextChapterID;
+                            success(resp.data);
+                        } else {
+                            error();
+                        }
+                    }
+                })
+            }
+
+            function appendChapterHtml(chapter){
+                var html= $("<div class='chapter'></div>");
+                html.append("<h2 class='chapter-title'>"+chapter.Title+"</h2>");
+                html.append("<div class='chapter-body'>"+chapter.Body+"</div>");
+                $(".chapter").last().after(html);
+            }
         })
+
     </script>
     }

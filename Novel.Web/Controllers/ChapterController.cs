@@ -21,5 +21,13 @@ namespace Novel.Web.Controllers
             var chapter = new ChapterManager().GetChapter(chapterId);
             return View(chapter);
         }
+
+        [HttpGet]
+        public ActionResult GetChapter(int chapterId)
+        {
+            var novel = new ChapterManager().GetChapter(chapterId);
+
+            return Json(new { success = true, data = novel }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
