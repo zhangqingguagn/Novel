@@ -1,0 +1,16 @@
+﻿@model Novel.Bll.DB.tChapter
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.Title</h2>
+
+<div>
+    @Html.Raw(Model.Body)
+</div>
+<p>
+    @Html.ActionLink("Prev", "Details", "Chapter", new { chapterId = Model.PrevChapterID }, null) |
+    @Html.ActionLink("Chapters", "Index") |
+    @Html.ActionLink("Next","Details", "Chapter", new { chapterId = Model.NextChapterID },null) |
+</p>

@@ -13,5 +13,5 @@
 
 @foreach (var item in Model)
 {
-    <a href="@Url.Action("Detail","Chapter",new { id = item.ID })">@item.Title</a>
-        }
+    <a href="@Url.Action("Details","Chapter",new { chapterId = item.ID })">@item.Title</a>
+}

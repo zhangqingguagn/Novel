@@ -83,8 +83,9 @@
         public string Title { get; set; }
         public string SourceUrl { get; set; }
         public string Body { get; set; }
-        public int NextChapterID { get; set; }
-        public int PrevChapterID { get; set; }
+        public int? NextChapterID { get; set; }
+        public int? PrevChapterID { get; set; }
+        public int Sort { get; set; }
     }
 
 }

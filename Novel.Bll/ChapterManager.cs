@@ -71,21 +71,85 @@ namespace Novel.Bll
 
             var chapterNodes = GetChaptersHtmlFromNovelSource(novelId);
 
-            /**
-             * 将下载的章节目录，存放到 tChapter 表中
-             */
+            var chapters = chapterNodes.Select(s => new tChapter()
+            {
+                Body = null,
+                ID = 0,
+                NovelID = novelId,
+                NextChapterID = null,
+                PrevChapterID = null,
+                SourceUrl = s.GetAttributeValue("href", "#").ToString(),
+                Title = s.InnerText,
+                Sort = 0
+            }).ToList();
 
-            throw new NotImplementedException();
+            int? nextChapterId = 0;
+            int? prevChapterId = 0;
+            using (var db = new NovelDbContext())
+            {
+                int pagesize = 30;
+                int pageindex = 0;
+                while (pagesize * pageindex < chapters.Count())
+                {
+                    var items = chapters.Skip(pageindex).Take(pagesize).ToList();
 
-            //var chapterHtmls = chapterNodes.Select(s => s.OuterHtml.ToString()).ToList();
-            //new FileHelper(novel.ChaptersPath).WriteAllLines(chapterHtmls.ToArray());
+                    db.tChapters.AddRange(items);
+                    db.SaveChanges();
+
+                    pageindex++;
+                }
+
+                for (int i = 0; i < chapters.Count(); i++)
+                {
+                    if (i != 0)
+                    {
+                        prevChapterId = chapters.ElementAt(i - 1).ID;
+                    }
+                    else
+                    {
+                        prevChapterId = null;
+                    }
+                    if (i != chapters.Count() - 1)
+                    {
+                        nextChapterId = chapters.ElementAt(i + 1).ID;
+                    }
+                    else
+                    {
+                        nextChapterId = null;
+                    }
+                    chapters.ElementAt(i).NextChapterID = nextChapterId;
+                    chapters.ElementAt(i).PrevChapterID = prevChapterId;
+                    if (i % pagesize == pagesize-1)
+                    {
+                        db.SaveChanges();
+                    }
+                }
+                db.SaveChanges();
+
+            }
         }
 
         public tChapter GetChapter(int id)
         {
             using (var db = new NovelDbContext())
             {
-                return db.tChapters.Where(s => s.ID == id).FirstOrDefault();
+                var chapter = db.tChapters.Where(s => s.ID == id).FirstOrDefault();
+
+                var novel = db.tNovels.FirstOrDefault(s => s.ID == chapter.NovelID);
+                var source = db.tSources.FirstOrDefault(s => s.ID == novel.SourceID);
+
+                if (string.IsNullOrEmpty(chapter.Body))
+                {
+                    // 从资源服务器获取小说内容
+                    // 保存到数据库
+
+                    var body = new HtmlHelper(new Uri(chapter.SourceUrl)).GetSingleInnerTextByXPath(source.ChapterBodyXpath);
+
+                    chapter.Body = body;
+                    db.SaveChanges();
+                }
+
+                return chapter;
             }
         }
 

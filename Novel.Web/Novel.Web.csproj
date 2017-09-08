@@ -173,6 +173,7 @@
     <Content Include="Views\Novel\Details.cshtml" />
     <Content Include="Views\Novel\Create.cshtml" />
     <Content Include="Views\Chapter\Index.cshtml" />
+    <Content Include="Views\Chapter\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

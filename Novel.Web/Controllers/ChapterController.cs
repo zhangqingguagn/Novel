@@ -12,9 +12,14 @@ namespace Novel.Web.Controllers
         // GET: Chapter
         public ActionResult Index(int novelId)
         {
-            var chepters = new ChapterManager().GetChaptersByNovelId(novelId);
+            var chapters = new ChapterManager().GetChaptersByNovelId(novelId);
 
-            return View(chepters);
+            return View(chapters);
+        }
+        public ActionResult Details(int chapterId)
+        {
+            var chapter = new ChapterManager().GetChapter(chapterId);
+            return View(chapter);
         }
     }
 }
