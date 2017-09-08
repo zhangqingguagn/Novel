@@ -6,11 +6,49 @@
 
 <h2>@Model.Title</h2>
 
-<div>
-    @Html.Raw(Model.Body)
+<div class="chapter">
+        <h2>@Model.Title</h2>
+        @Html.Raw(Model.Body)
 </div>
 <p>
     @Html.ActionLink("Prev", "Details", "Chapter", new { chapterId = Model.PrevChapterID }, null) |
     @Html.ActionLink("Chapters", "Index") |
     @Html.ActionLink("Next","Details", "Chapter", new { chapterId = Model.NextChapterID },null) |
 </p>
+<template id="chapterBody">
+    <div class="chapter">
+        <h2>@Model.Title</h2>
+        @Html.Raw(Model.Body)
+    </div>
+</template>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            var temp = $("#chapterBody").html();
+
+            $('.chapter').on('scrollSpy:enter', function () {
+                $(".chapter").after(temp);
+                addScrollSpyListener();
+            });
+            function addScrollSpyListener() {
+                $('.chapter').on('scrollSpy:exit', function () {
+                    if ($('.chapter').size() > 1) {
+                        $(this).remove();
+                    }
+                    // 取消当前监听
+                    $(".chapter").off("scrollSpy:exit");
+
+                    $(".chapter").last().after(temp);
+
+                    addScrollSpyListener();
+
+                    console.log($(".chapter").size())
+                    $('.chapter').scrollSpy();
+                });
+            }
+
+            $('.chapter:last').scrollSpy();
+        })
+    </script>
+    }
