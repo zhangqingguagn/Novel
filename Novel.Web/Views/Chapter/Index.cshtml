@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<Novel.Bll.DB.tChapter>
 @{
     ViewBag.Title = "Index";
 }
@@ -11,5 +11,7 @@
 </style>
 <h2>Index</h2>
 
-@Html.Raw(ViewBag.ChapterText)
-
+@foreach (var item in Model)
+{
+    <a href="@Url.Action("Detail","Chapter",new { id = item.ID })">@item.Title</a>
+        }

@@ -1,4 +1,5 @@
-﻿using Novel.Bll.Entities;
+﻿using Novel.Bll.DB;
+using Novel.Bll.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,20 @@ namespace Novel.Bll
                 };
             }
         }
-        public NovelSource GetSource(int id)
+        public tSource GetSource(int id)
         {
-            return novelSources.Where(s=>s.ID == id).FirstOrDefault();
+            using (var db = new NovelDbContext())
+            {
+                return db.tSources.Where(s => s.ID == id).FirstOrDefault();
+            }
+        }
+        public void AddSource(tSource source)
+        {
+            using (var db = new NovelDbContext())
+            {
+                db.tSources.Add(source);
+                db.SaveChanges();
+            }
         }
     }
 }

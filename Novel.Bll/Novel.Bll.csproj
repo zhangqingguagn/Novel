@@ -70,10 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChapterManager.cs" />
+    <Compile Include="DB\NovelDbContext.cs" />
     <Compile Include="Entities\ChapterEntity.cs" />
     <Compile Include="Entities\NovelEntity.cs" />
     <Compile Include="Entities\NovelSource.cs" />
-    <Compile Include="Model1.cs" />
     <Compile Include="NovelManager.cs" />
     <Compile Include="NovelSourceManager.cs" />
     <Compile Include="Utilities\FileHelper.cs" />

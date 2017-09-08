@@ -20,7 +20,9 @@ namespace Novel.App
         }
         static void AddNovel(string title,string chapters,string xpath)
         {
-            new Novel.Bll.NovelManager().AddNovel(title, chapters, 1);
+            new Novel.Bll.NovelManager().AddNovel(new Bll.DB.tNovel() {
+                
+            });
         }
     }
 }

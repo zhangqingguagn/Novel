@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Novel.Bll.Entities.NovelEntity>
+﻿@model IEnumerable<Novel.Bll.DB.tNovel>
 
 @{
     ViewBag.Title = "Index";
@@ -40,7 +40,7 @@
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
                     @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                    @Html.ActionLink("Chapters","Index", "Chapter", new { chapterId = item.ID },null) |
+                    @Html.ActionLink("Chapters","Index", "Chapter", new { novelId = item.ID },null) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.ID })
                 </td>
             </tr>

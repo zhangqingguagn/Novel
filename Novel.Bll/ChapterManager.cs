@@ -1,4 +1,5 @@
-﻿using Novel.Bll.Entities;
+﻿using Novel.Bll.DB;
+using Novel.Bll.Entities;
 using Novel.Bll.Utilities;
 using System;
 using System.Collections.Generic;
@@ -26,18 +27,6 @@ namespace Novel.Bll
                 Body = "",
                 Title = s.InnerText
             }).ToList();
-        }
-
-        public string GetChaptersText(int chapterId)
-        {
-            var novel = new NovelManager().GetNovel(chapterId);
-
-            if (File.Exists(novel.ChaptersPath)==false)
-            {
-                DownloadChapters(novel.ID);
-            }
-
-            return new FileHelper(novel.ChaptersPath).ReadAllText();
         }
 
         /// <summary>
@@ -70,6 +59,7 @@ namespace Novel.Bll
 
             return chapterNodes;
         }
+
         /// <summary>
         /// 从小说服务器下载章节列表，保存到本地
         /// </summary>
@@ -81,14 +71,31 @@ namespace Novel.Bll
 
             var chapterNodes = GetChaptersHtmlFromNovelSource(novelId);
 
-            var chapterHtmls = chapterNodes.Select(s => s.OuterHtml.ToString()).ToList();
+            /**
+             * 将下载的章节目录，存放到 tChapter 表中
+             */
 
-            if (Directory.Exists(novel.NovelDirectory) ==false)
-            {
-                Directory.CreateDirectory(novel.NovelDirectory);
-            }
+            throw new NotImplementedException();
 
-            new FileHelper(novel.ChaptersPath).WriteAllLines(chapterHtmls.ToArray());
+            //var chapterHtmls = chapterNodes.Select(s => s.OuterHtml.ToString()).ToList();
+            //new FileHelper(novel.ChaptersPath).WriteAllLines(chapterHtmls.ToArray());
         }
+
+        public tChapter GetChapter(int id)
+        {
+            using (var db = new NovelDbContext())
+            {
+                return db.tChapters.Where(s => s.ID == id).FirstOrDefault();
+            }
+        }
+
+        public List<tChapter> GetChaptersByNovelId(int novelId)
+        {
+            using (var db = new NovelDbContext())
+            {
+                return db.tChapters.Where(s=>s.NovelID == novelId).ToList();
+            }
+        }
+
     }
 }

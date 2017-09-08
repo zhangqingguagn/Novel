@@ -1,4 +1,5 @@
-﻿using Novel.Bll.Entities;
+﻿using Novel.Bll.DB;
+using Novel.Bll.Entities;
 using Novel.Bll.Utilities;
 using System;
 using System.Collections.Generic;
@@ -28,37 +29,32 @@ namespace Novel.Bll
             }
         }
 
-        public object GetNovels()
+        public List<tNovel> GetNovels()
         {
-            return novels;
+            using (var db = new NovelDbContext())
+            {
+                return db.tNovels.ToList();
+            }
         }
 
         public NovelManager()
         {
         }
-        public NovelEntity GetNovel(int id)
+        public tNovel GetNovel(int id)
         {
-            Model1 db = new Model1();
-            db.MyEntities.Add(new MyEntity()
+            using (var db = new NovelDbContext())
             {
-                Id = 0,
-                Name = "Entity Name"
-            });
-            db.SaveChanges();
-
-            return novels.Where(s => s.ID == id).FirstOrDefault();
+                return db.tNovels.Where(s=>s.ID == id).FirstOrDefault();
+            }
         }
 
-        public void AddNovel(string title, string chapterUrl, int sourceID)
+        public void AddNovel(tNovel novel)
         {
-            int id = novels.Any()? novels.Max(s => s.ID):0 + 1;
-            novels.Add(new NovelEntity()
+            using (var db = new NovelDbContext())
             {
-                ID = id,
-                ChapterDirectoryUrl = chapterUrl,
-                SourceID = sourceID,
-                Title = title
-            });
+                db.tNovels.Add(novel);
+                db.SaveChanges();
+            }
         }
     }
 }

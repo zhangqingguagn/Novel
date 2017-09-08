@@ -10,12 +10,11 @@ namespace Novel.Web.Controllers
     public class ChapterController : Controller
     {
         // GET: Chapter
-        public ActionResult Index(int chapterId)
+        public ActionResult Index(int novelId)
         {
-            var chapter = new ChapterManager().GetChaptersText(chapterId);
-            ViewBag.ChapterText = chapter;
+            var chepters = new ChapterManager().GetChaptersByNovelId(novelId);
 
-            return View();
+            return View(chepters);
         }
     }
 }
