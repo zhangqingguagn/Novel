@@ -6,27 +6,26 @@
 }
 <div class="chapters">
     <div class="chapter">
-        <h2>@Model.Title</h2>
-        @Html.Raw(Model.Body)
+        <h2 class="chapter-title">@Model.Title</h2>
+        <div class="chapter-body">@Html.Raw(Model.Body)</div>
+        
     </div>
 </div>
 @section scripts{
     <script type="text/javascript">
+        window.onbeforeunload = function(){ scrollTo(0,0);window.location.href = window.location.href;; }
         $(function () {
+            
             var nextChapterId = @(Model.NextChapterID??0);
-            var temp = $("#chapterBody").html();
 
-            //$('.chapter').on('scrollSpy:enter', function () {
-            //    getNext(function(chapter){
-            //        appendChapterHtml(chapter);
-
-            //        addScrollSpyListener();
-            //    }, null)
-
-            //});
             function addScrollSpyListener() {
                 $('.chapter').on('scrollSpy:enter', function () {
                     var $this = $(this);
+                    if($this.data()&&$this.data().ID){
+                        var url = "@Url.Action("Details","Chapter",new { chapterId=0})/".replace("/0/","/")+$this.data().ID;
+                        history.pushState("ChapterDetails",$this.data().Title,url);
+                    }
+
                     if($(".chapter").size()-1==$(".chapter").index($this)){
                         getNext(function(chapter){
                             // 取消当前监听
@@ -50,15 +49,17 @@
                 error = error || function () { };
                 var data =
                 $.ajax({
-                    url: "@Url.Action("GetChapter", "Chapter")",
+                    url: "@Url.Action("GetChapter","Chapter",new { chapterId=0})/".replace("/0/","/"+nextChapterId),
                     type: "get",
                     dataType: "json",
-                    data: { chapterId: nextChapterId },
+                    data: {},
                     async: true,
                     success: function (resp) {
                         if (resp.success) {
-                            nextChapterId = resp.data.NextChapterID;
-                            success(resp.data);
+                            if(resp.data){
+                                nextChapterId = resp.data.NextChapterID;
+                                success(resp.data);
+                            }
                         } else {
                             error();
                         }
@@ -70,6 +71,9 @@
                 var html= $("<div class='chapter'></div>");
                 html.append("<h2 class='chapter-title'>"+chapter.Title+"</h2>");
                 html.append("<div class='chapter-body'>"+chapter.Body+"</div>");
+
+                html.data(chapter);
+
                 $(".chapter").last().after(html);
             }
         })

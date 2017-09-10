@@ -9,7 +9,6 @@ namespace Novel.Web.Controllers
 {
     public class ChapterController : Controller
     {
-        // GET: Chapter
         public ActionResult Index(int novelId)
         {
             var chapters = new ChapterManager().GetChaptersByNovelId(novelId);
@@ -19,6 +18,10 @@ namespace Novel.Web.Controllers
         public ActionResult Details(int chapterId)
         {
             var chapter = new ChapterManager().GetChapter(chapterId);
+            if (chapter == null)
+            {
+                return Content("章节错误，请返回章节目录！");
+            }
             return View(chapter);
         }
 
@@ -26,8 +29,17 @@ namespace Novel.Web.Controllers
         public ActionResult GetChapter(int chapterId)
         {
             var novel = new ChapterManager().GetChapter(chapterId);
+            if (novel == null)
+            {
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
 
             return Json(new { success = true, data = novel }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Download(int novelId)
+        {
+            new ChapterManager().DownloadChapters(novelId);
+            return Content("下载成功！");
         }
     }
 }

@@ -87,11 +87,12 @@ namespace Novel.Bll
             int? prevChapterId = 0;
             using (var db = new NovelDbContext())
             {
+                db.tChapters.RemoveRange(db.tChapters.Where(s => s.NovelID == novelId));
                 int pagesize = 30;
                 int pageindex = 0;
                 while (pagesize * pageindex < chapters.Count())
                 {
-                    var items = chapters.Skip(pageindex).Take(pagesize).ToList();
+                    var items = chapters.Skip(pageindex * pagesize).Take(pagesize).ToList();
 
                     db.tChapters.AddRange(items);
                     db.SaveChanges();
@@ -134,6 +135,10 @@ namespace Novel.Bll
             using (var db = new NovelDbContext())
             {
                 var chapter = db.tChapters.Where(s => s.ID == id).FirstOrDefault();
+                if (chapter == null)
+                {
+                    return null;
+                }
 
                 var novel = db.tNovels.FirstOrDefault(s => s.ID == chapter.NovelID);
                 var source = db.tSources.FirstOrDefault(s => s.ID == novel.SourceID);
